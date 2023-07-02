@@ -26,13 +26,6 @@ void main() {
         .thenAnswer((_) async => articleFromService);
   }
 
-  void arrageNewsServiceReturns3ArticalesAfter2SecondsWait() {
-    when(() => mockNewsService.getArticles()).thenAnswer((_) async {
-      await Future.delayed(const Duration(seconds: 2));
-      return articleFromService;
-    });
-  }
-
   createWidgetUnderTest() {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.deepPurple),
@@ -43,33 +36,16 @@ void main() {
     );
   }
 
-  testWidgets('title is displayed', (widgetTester) async {
-    arrageNewsServiceReturns3Articales();
-    await widgetTester.pumpWidget(createWidgetUnderTest());
-    expect(find.text('News'), findsOneWidget);
-  });
-
-  testWidgets('description', (widgetTester) async {
-    arrageNewsServiceReturns3ArticalesAfter2SecondsWait();
-
-    await widgetTester.pumpWidget(createWidgetUnderTest());
-
-    await widgetTester.pump(const Duration(milliseconds: 500));
-
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-
-    widgetTester.pumpAndSettle();
-  });
-  testWidgets('get articles ', (widgetTester) async {
+  testWidgets('integration test for app', (widgetTester) async {
     arrageNewsServiceReturns3Articales();
 
     await widgetTester.pumpWidget(createWidgetUnderTest());
 
     await widgetTester.pump();
+    await widgetTester.tap(find.text('Test 1 content'));
+    await widgetTester.pumpAndSettle();
 
-    for (final article in articleFromService) {
-      expect(find.text(article.title!), findsOneWidget);
-      expect(find.text(article.title!), findsOneWidget);
-    }
+    expect(find.byType(NewsPage), findsNothing);
+    expect(find.byType(ArticlePage), findsOneWidget);
   });
 }

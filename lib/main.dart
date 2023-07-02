@@ -104,7 +104,7 @@ class _ArticlePageState extends State<ArticlePage> {
           const SizedBox(
             height: 20,
           ),
-          Text(widget.article.title ?? ' '),
+          Text(widget.article.content ?? ' '),
         ]),
       )),
     );
